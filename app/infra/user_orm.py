@@ -10,7 +10,7 @@ class Base(DeclarativeBase):
 class UserORM(Base):
     __tablename__ = "users"
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     name: Mapped[VARCHAR] = mapped_column(VARCHAR(30))
     email: Mapped[VARCHAR] = mapped_column(VARCHAR(45), unique=True)
     password: Mapped[String] = mapped_column(VARCHAR(16))
@@ -19,3 +19,5 @@ class UserORM(Base):
 
 engine = create_engine('sqlite:///crm_database.db')
 Base.metadata.create_all(engine)
+
+print(type(engine))

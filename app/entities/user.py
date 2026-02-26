@@ -1,14 +1,15 @@
 from app.utils.password import valid_password
+from typing import Optional
 
 
 class User():
     def __init__(
         self,
-        id: int,
         name: str,
         email: str,
         password: str,
-        blocked: bool
+        blocked: bool,
+        id: Optional[int] = None
     ):
         self.__id = id
         self.__name = name
@@ -42,6 +43,17 @@ class User():
             raise Exception("user is blocked, can't change his e-mail")
 
         self.__email == new_user_email
+
+    @property
+    def password(self):
+        return self.__password
+
+    @property
+    def blocked(self):
+        return self.__blocked
+
+    def user_unblock(self):
+        self.__blocked = False
 
     def change_user_password(self, new_password: str):
         if self.__blocked:
