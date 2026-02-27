@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy import select
 
 
-class UserRepositoryTeste(UserRepositoryInterface):
+class FakeUserRepository(UserRepositoryInterface):
     def __init__(self, engine: Engine):
         self.engine = engine
         self.session = Session(engine)
@@ -22,7 +22,15 @@ class UserRepositoryTeste(UserRepositoryInterface):
                 )
                 s.add(new_user)
                 s.commit()
-            return user
+
+                orm_to_user = User(
+                    new_user.name,
+                    new_user.email,
+                    new_user.password,
+                    new_user.blocked,
+                    new_user.id
+                )
+            return orm_to_user
         except Exception:
             return None
 
