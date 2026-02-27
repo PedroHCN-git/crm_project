@@ -63,3 +63,6 @@ class User():
             raise Exception("new password is not valid, please follow the pattern stablished")
 
         self.__password = new_password
+
+    def __str__(self):
+        return f'{self.id, self.name, self.email}'
