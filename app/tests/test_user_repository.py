@@ -1,13 +1,53 @@
-from fake_user_repository import FakeUserRepository
+from app.tests.fake_user_repository import FakeUserRepository
 from app.entities.user import User
-import json
+from sqlalchemy import create_engine
 
-user_data: dict = json.loads('\\user_data.json')
-user_list: list[User] = [value for _, value in user_data.items()]
+# testar apenas listagem e salvamento de dados, verificação de dados é regra de negócio
+# responsabilidade do service
 
+engine = create_engine('sqlite:///crm_database.db')
 
-def test_save_user():
-    repository = FakeUserRepository()
+user1 = User(
+    "giovana corradini",
+    "giovana@gmail.com.br",
+    "123",
+    False
+)
 
-    for user in user_list:
-        assert repository.save_user(user) == str(user)
+user2 = User(
+    "pedro corradini",
+    "teste@gmail.com",
+    "123",
+    False
+)
+
+user3 = User(
+    "patricia corradini",
+    "patrcia@gmail.com",
+    "457",
+    True
+)
+
+user4 = User(
+    "leandro nunes",
+    "leandro@gmail.com",
+    "908",
+    True
+)
+
+user5 = User(
+    "jessica corradini",
+    "jessica@gmail.com",
+    "873",
+    False
+)
+
+user_list = [user1, user2, user3, user4, user5]
+
+def test_get_users():
+    repository = FakeUserRepository(engine)
+
+    _user_list = repository.get_users()
+
+    for i, user in enumerate(_user_list):
+        assert str(user) == str(user_list[i])
