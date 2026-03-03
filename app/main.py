@@ -1,4 +1,5 @@
 from flask import Flask, Response
+from services.user_service import UserService
 
 app = Flask()
 

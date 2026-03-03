@@ -6,7 +6,7 @@ from typing import Optional
 class UserRepositoryInterface(ABC):
 
     @abstractmethod
-    def create_user() -> User:
+    def save_user(user: User) -> bool:
         raise NotImplementedError
 
     @abstractmethod

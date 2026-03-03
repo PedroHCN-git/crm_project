@@ -1,20 +1,17 @@
 from abc import ABC, abstractmethod
-from app.repositories.user_repository_interface import UserRepositoryInterface
-
+from app.dto.user import UserDTO
+from typing import Optional
 
 class UserServiceInterface(ABC):
 
-    def __init__(self, user_repository: UserRepositoryInterface):
-        self.user_repository = user_repository
-
     @abstractmethod
-    def create_user(self):
+    def save_user(self, user: UserDTO) -> bool:
         raise NotImplementedError
 
     @abstractmethod
-    def get_users(self):
+    def get_users(self) -> list[UserDTO]:
         raise NotImplementedError
 
     @abstractmethod
-    def get_user(self, id: int):
+    def get_user(self, id: int) -> Optional[UserDTO]:
         raise NotImplementedError

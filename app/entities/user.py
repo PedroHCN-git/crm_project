@@ -1,4 +1,4 @@
-from app.utils.password import valid_password
+from app.utils.user_data_validation import valid_password
 from typing import Optional
 
 
@@ -65,4 +65,4 @@ class User():
         self.__password = new_password
 
     def __str__(self):
-        return f'{self.id, self.name, self.email}'
+        return f'{self.name, self.email}'
