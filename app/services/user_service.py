@@ -12,8 +12,6 @@ class UserService(UserServiceInterface):
 
 
     def save_user(self, user: UserDTO) -> bool:
-        if not self.__user_data_validation(user):
-            return False
         
         new_user = self.__transform_dto(user)
 
@@ -57,20 +55,3 @@ class UserService(UserServiceInterface):
 
         return user_dto
     
-
-    def __user_data_validation(self, user: UserDTO) -> bool:
-        email_is_valid = self.__valid_email(user.email)
-        password_is_valid = self.__valid_password(user.password)
-
-        if email_is_valid and password_is_valid:
-            return True
-        
-        return False
-
-
-    def __valid_email(self, email: str) -> bool:
-        return bool((r'^[A-Za-z0-9._%-]+@[A-Za-z.-]+\.[A-Za-z.]{2,}', email))
-
-    def __valid_password(self, password: str) -> bool:
-
-        return bool(re.fullmatch(r'[A-Za-z0-9@#!&$%+^]{8,}', password))
