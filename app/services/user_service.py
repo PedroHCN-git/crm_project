@@ -4,7 +4,6 @@ from app.dto.user import UserDTO
 from app.entities.user import User
 from typing import Optional
 from app.exceptions.domain import DomainException
-from app.exceptions.service import UserNotFoundException
 
 class UserService(UserServiceInterface):
     
@@ -20,16 +19,16 @@ class UserService(UserServiceInterface):
     
 
     def get_user(self, id: int) -> Optional[UserDTO]:
-        user = self.user_repository.get_user(id)
+        user = self.user_repository.get_by_id(id)
 
         if not user:
-            raise UserNotFoundException("User not found")
+            return None
         
         return self.__transform_entity(user)
     
 
     def get_users(self) -> list[UserDTO]:
-        users_list = self.user_repository.get_users()
+        users_list = self.user_repository.list()
 
         if not users_list:
             return []
@@ -38,24 +37,18 @@ class UserService(UserServiceInterface):
 
 
     def change_email(self, id: int, email: str):
-        user = self.user_repository.get_user(id)
-
-        if not user:
-            raise UserNotFoundException("User not found")
+        user = self.user_repository.get_by_id_or_fail(id)
 
         try:
             user.email = email
         except DomainException as e:
             raise e
         
-        return
+        self.user_repository.change_email(email)
     
 
     def change_password(self, id: int, password: str):
         user = self.user_repository.get_user(id)
-
-        if not user:
-            raise UserNotFoundException("User not found")
 
         try:
             user.password = password

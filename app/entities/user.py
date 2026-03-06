@@ -59,11 +59,9 @@ class User():
     @property
     def blocked(self):
         return self.__blocked
-
-    def user_unblock(self):
-        self.__blocked = False
-
-    def change_user_password(self, new_password: str):
+    
+    @password.setter
+    def password(self, new_password: str):
         if self.__blocked:
             raise UserBlockedException("user is blocked, can't change his password")
 
