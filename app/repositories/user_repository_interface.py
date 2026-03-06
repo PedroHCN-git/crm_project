@@ -1,26 +1,6 @@
-from abc import ABC, abstractmethod
+from app.repositories.base_repository_interface import BaseRepositoryInterface
 from app.entities.user import User
-from typing import Optional
 
 
-class UserRepositoryInterface(ABC):
-
-    @abstractmethod
-    def save_user(user: User):
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_user(id: int) -> Optional[User]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_users() -> list[User]:
-        raise NotImplementedError
-    
-    @abstractmethod
-    def update_email(email: str):
-        raise NotImplementedError
-    
-    @abstractmethod
-    def update_password(password: str):
-        raise NotImplementedError
+class UserRepositoryInterface(BaseRepositoryInterface[User]):
+    pass

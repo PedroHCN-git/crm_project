@@ -1,4 +1,5 @@
 from app.repositories.user_repository_interface import UserRepositoryInterface
+from app.exceptions.repository import NotFoundError
 from app.entities.user import User
 from app.infra.user_orm import UserORM
 from sqlalchemy import Engine
@@ -10,7 +11,7 @@ class UserRepository(UserRepositoryInterface):
         self.engine = engine
         self.session = Session(engine)
 
-    def save_user(self, user: User):
+    def save(self, user: User):
         try:
             with self.session as s:
                 new_user = UserORM(
@@ -27,7 +28,15 @@ class UserRepository(UserRepositoryInterface):
         return True
     
 
-    def get_user(self, id: int):
+    def get_by_id_or_fail(self, id: int):
+
+        user = self.get_by_id(id)
+        if not user:
+            raise NotFoundError("User not found")
+
+        return user
+    
+    def get_by_id(self, id):
         stmt = select(UserORM).where(UserORM.id == id)
         results = self.session.scalars(stmt)
 
@@ -47,9 +56,9 @@ class UserRepository(UserRepositoryInterface):
             )
 
         return user
+        
 
-
-    def get_users(self):
+    def list(self):
         stmt = select(UserORM)
         results = self.session.scalars(stmt)
 
