@@ -3,7 +3,8 @@ from app.repositories.user_repository_interface import UserRepositoryInterface
 from app.dto.user import UserDTO
 from app.entities.user import User
 from typing import Optional
-import re
+from app.exceptions.domain import DomainException
+from app.exceptions.service import UserNotFoundException
 
 class UserService(UserServiceInterface):
     
@@ -22,7 +23,7 @@ class UserService(UserServiceInterface):
         user = self.user_repository.get_user(id)
 
         if not user:
-            return None
+            raise UserNotFoundException("User not found")
         
         return self.__transform_entity(user)
     
@@ -33,8 +34,43 @@ class UserService(UserServiceInterface):
         if not users_list:
             return []
         
-        return [self.__transform_entity(user) for user in users_list]    
+        return [self.__transform_entity(user) for user in users_list]
 
+
+    def change_email(self, id: int, email: str):
+        user = self.user_repository.get_user(id)
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        try:
+            user.email = email
+        except DomainException as e:
+            raise e
+        
+        return
+    
+
+    def change_password(self, id: int, password: str):
+        user = self.user_repository.get_user(id)
+
+        if not user:
+            raise UserNotFoundException("User not found")
+
+        try:
+            user.password = password
+        except DomainException as e:
+            raise e
+        
+        self.user_repository.update_password(user)
+        
+        return
+
+
+    def unblock_user(self, id):
+        user = self.user_repository.get_user(id)
+
+        user.blocked = False
     
     def __transform_dto(self, user: UserDTO) -> User:
         new_user = User(

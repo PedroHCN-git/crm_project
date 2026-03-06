@@ -6,7 +6,7 @@ from typing import Optional
 class UserRepositoryInterface(ABC):
 
     @abstractmethod
-    def save_user(user: User) -> bool:
+    def save_user(user: User):
         raise NotImplementedError
 
     @abstractmethod
@@ -15,4 +15,12 @@ class UserRepositoryInterface(ABC):
 
     @abstractmethod
     def get_users() -> list[User]:
+        raise NotImplementedError
+    
+    @abstractmethod
+    def update_email(email: str):
+        raise NotImplementedError
+    
+    @abstractmethod
+    def update_password(password: str):
         raise NotImplementedError
