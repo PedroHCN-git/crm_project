@@ -55,4 +55,20 @@ engine = create_engine('sqlite:///crm_database.db')
 def test_get_by_id_or_fail():
     repository = FakeUserRepository(engine)
 
-    assert repository.get_by_id(10) == None
+    original = repository.get_by_id(6)
+
+    modified = User(
+        id=original.id,
+        name=original.name,
+        email='teste.200@gmail.com',
+        password='Phn142536@',
+        blocked=False
+    )
+
+    repository.save(modified)
+
+    saved = repository.get_by_id(6)
+
+    assert saved.email == modified.email
+
+test_get_by_id_or_fail()

@@ -15,18 +15,27 @@ class FakeUserRepository(UserRepositoryInterface):
     def save(self, user: User):
         try:
             with self.session as s:
-                new_user = UserORM(
-                    name=user.name,
-                    email=user.email,
-                    password=user.password,
-                    blocked=user.blocked
-                )
-                s.add(new_user)
-                s.commit()
-        except Exception:
-            return False
+                user_orm = s.query(UserORM).filter_by(id=user.id).first()
 
-        return True
+                if user_orm:
+                    user_orm.name = user.name
+                    user_orm.email = user.email
+                    user_orm.password = user.password
+                    user_orm.blocked = user.blocked
+                else:
+                    new_user = UserORM(
+                        name=user.name,
+                        email=user.email,
+                        password=user.password,
+                        blocked=user.blocked
+                    )
+                    s.add(new_user)
+                
+                s.commit()
+        except Exception as e:
+            s.rollback()
+
+            raise e
     
 
     def get_by_id_or_fail(self, id: int):
