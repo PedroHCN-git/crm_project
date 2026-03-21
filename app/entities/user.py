@@ -13,7 +13,7 @@ class User():
         name: str,
         email: str,
         password: str,
-        blocked: bool,
+        blocked: bool = False,
         id: Optional[int] = None
     ):
         self.__id = id
@@ -47,9 +47,8 @@ class User():
         if self.__blocked:
             raise UserBlockedException("user is blocked, can't change his e-mail")
         
-        elif not self.__valid_email:
-            raise EmailNotValidException("User e-mail is not valid")
-
+        self.__valid_email(new_user_email)
+           
         self.__email == new_user_email
 
     @property
@@ -61,23 +60,37 @@ class User():
         return self.__blocked
     
     @password.setter
-    def password(self, new_password: str):
+    def password(self, new_user_password: str):
         if self.__blocked:
             raise UserBlockedException("user is blocked, can't change his password")
 
-        elif not self.__valid_password(new_password):
+        self.__valid_password(new_user_password)
+
+        self.__password = new_user_password
+
+
+    def __valid_email(self, email: str):
+
+        if not re.fullmatch(r'^[A-Za-z0-9._%-]+@[A-Za-z.-]+\.[A-Za-z.]{2,}', email):
+            raise EmailNotValidException("User e-mail is not valid")
+        
+        return email
+
+
+    def __valid_password(self, password: str):
+
+        if not re.fullmatch(r'[A-Za-z0-9@#!&$%+^]{8,}', password):
             raise PasswordNotValidException("User password is not valid")
-
-        self.__password = new_password
-
-
-    def __valid_email(self, email: str) -> bool:
-        return bool((r'^[A-Za-z0-9._%-]+@[A-Za-z.-]+\.[A-Za-z.]{2,}', email))
-
-
-    def __valid_password(self, password: str) -> bool:
-
-        return bool(re.fullmatch(r'[A-Za-z0-9@#!&$%+^]{8,}', password))
+        
+        return password
 
     def __str__(self):
         return f'{self.name, self.email}'
+    
+if __name__ == '__main__':
+    user = User(
+        'pedro',
+        'pedro@gmail.com',
+        'Phn142536@',
+        False
+    )

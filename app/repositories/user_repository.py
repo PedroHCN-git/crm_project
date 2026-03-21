@@ -12,7 +12,6 @@ class UserRepository(UserRepositoryInterface):
         self.session = Session(engine)
 
     def save(self, user: User):
-        # isso está ruim, mudar
         try:
             with self.session as s:
                 user_orm = s.query(UserORM).filter_by(id=user.id).first()
@@ -65,6 +64,8 @@ class UserRepository(UserRepositoryInterface):
                 user_data.id
             )
 
+        self.session.close()
+
         return user
         
 
@@ -88,5 +89,7 @@ class UserRepository(UserRepositoryInterface):
                 )
 
                 user_list.append(user)
+
+        self.session.close()
 
         return user_list

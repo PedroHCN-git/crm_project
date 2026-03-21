@@ -11,14 +11,14 @@ class UserService(UserServiceInterface):
         self.user_repository = user_repository
 
 
-    def save_user(self, user: UserDTO) -> bool:
+    def save(self, user: UserDTO):
         
         new_user = self.__transform_dto(user)
 
-        return self.user_repository.save_user(new_user)
+        return self.user_repository.save(new_user)
     
 
-    def get_user(self, id: int) -> Optional[UserDTO]:
+    def get_by_id(self, id: int) -> Optional[UserDTO]:
         user = self.user_repository.get_by_id(id)
 
         if not user:
@@ -27,7 +27,7 @@ class UserService(UserServiceInterface):
         return self.__transform_entity(user)
     
 
-    def get_users(self) -> list[UserDTO]:
+    def list(self) -> list[UserDTO]:
         users_list = self.user_repository.list()
 
         if not users_list:
@@ -60,7 +60,7 @@ class UserService(UserServiceInterface):
         return
 
 
-    def unblock_user(self, id):
+    def unblock(self, id):
         user = self.user_repository.get_user(id)
 
         user.blocked = False
@@ -69,7 +69,8 @@ class UserService(UserServiceInterface):
         new_user = User(
             user.name,
             user.email,
-            user.password
+            user.password,
+            id=user.user_id
         )
 
         return new_user
@@ -83,4 +84,7 @@ class UserService(UserServiceInterface):
         )
 
         return user_dto
+    
+if __name__ == '__main__':
+    user_service = UserService()
     

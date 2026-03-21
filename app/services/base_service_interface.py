@@ -2,10 +2,10 @@ from abc import ABC, abstractmethod
 from typing import Generic, Optional, TypeVar
 
 T = TypeVar('T')
-class BaseRepositoryInterface(ABC, Generic[T]):
+class BaseServiceInterface(ABC, Generic[T]):
 
     @abstractmethod
-    def save(self, obj: T) -> None:
+    def save(self, dto: T):
         raise NotImplementedError
 
     @abstractmethod
@@ -14,8 +14,4 @@ class BaseRepositoryInterface(ABC, Generic[T]):
 
     @abstractmethod
     def get_by_id(self, id: int) -> Optional[T]:
-        raise NotImplementedError
-
-    @abstractmethod
-    def get_by_id_or_fail(self, id: int) -> T:
         raise NotImplementedError
