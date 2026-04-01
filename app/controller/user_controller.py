@@ -1,9 +1,17 @@
 from flask import Blueprint
 from app.services.user_service import UserService
+from app.repositories.user_repository import UserRepository
+from app.dto.user import UserDTO
+from app.infra.session_manager import SessionLocal
 
-def create_bp(user_service: UserService):
-    bp = Blueprint(__file__, 'User', url_prefix='/user')
+user_bp = Blueprint('users', __file__, url_prefix='/users')
 
-    @bp.route('/', methods=['GET'])
-    def get_users():
-        pass
+
+def get_user_service():
+    return UserService(UserRepository(SessionLocal()))
+
+
+@user_bp.route('/', methods=['GET'])
+def get_users() -> list[UserDTO]:
+    user_service = get_user_service()
+    return user_service.list()

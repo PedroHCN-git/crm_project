@@ -2,15 +2,14 @@ from app.repositories.user_repository_interface import UserRepositoryInterface
 from app.exceptions.repository import NotFoundError
 from app.entities.user import User
 from app.infra.user_orm import UserORM
-from sqlalchemy import Engine
 from sqlalchemy.orm import Session
-from sqlalchemy import select, update
+from sqlalchemy import select
+
 
 class UserRepository(UserRepositoryInterface):
-    def __init__(self, engine: Engine):
-        self.engine = engine
-        self.session = Session(engine)
-
+    def __init__(self, session: Session):
+        self.session = session
+    
     def save(self, user: User):
         try:
             with self.session as s:
@@ -36,7 +35,6 @@ class UserRepository(UserRepositoryInterface):
 
             raise e
     
-
     def get_by_id_or_fail(self, id: int):
 
         user = self.get_by_id(id)

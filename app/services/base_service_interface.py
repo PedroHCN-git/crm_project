@@ -9,7 +9,7 @@ class BaseServiceInterface(ABC, Generic[T]):
         raise NotImplementedError
 
     @abstractmethod
-    def list(self) -> list[T]:
+    def list() -> list[T]:
         raise NotImplementedError
 
     @abstractmethod

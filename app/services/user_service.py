@@ -86,5 +86,8 @@ class UserService(UserServiceInterface):
         return user_dto
     
 if __name__ == '__main__':
-    user_service = UserService()
+    from app.repositories.user_repository import UserRepository
+    user_service = UserService(UserRepository())
+
+    user_service.list()
     
