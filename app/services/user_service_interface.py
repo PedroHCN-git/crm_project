@@ -1,9 +1,9 @@
 from abc import ABC, abstractmethod
-from app.dto.user import UserDTO
+from app.dto.user import BaseUserDTO
 from typing import Optional
 from app.services.base_service_interface import BaseServiceInterface
 
-class UserServiceInterface(BaseServiceInterface[UserDTO]):
+class UserServiceInterface(BaseServiceInterface[BaseUserDTO]):
     
     @abstractmethod
     def unblock(self, id: int):

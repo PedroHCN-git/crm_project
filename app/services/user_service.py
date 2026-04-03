@@ -1,6 +1,6 @@
 from app.services.user_service_interface import UserServiceInterface
 from app.repositories.user_repository_interface import UserRepositoryInterface
-from app.dto.user import UserDTO
+from app.dto.user import UserCreateDTO, UserResponseDTO
 from app.entities.user import User
 from typing import Optional
 from app.exceptions.domain import DomainException
@@ -11,14 +11,14 @@ class UserService(UserServiceInterface):
         self.user_repository = user_repository
 
 
-    def save(self, user: UserDTO):
+    def save(self, user: UserCreateDTO):
         
         new_user = self.__transform_dto(user)
 
         return self.user_repository.save(new_user)
     
 
-    def get_by_id(self, id: int) -> Optional[UserDTO]:
+    def get_by_id(self, id: int) -> Optional[UserResponseDTO]:
         user = self.user_repository.get_by_id(id)
 
         if not user:
@@ -27,13 +27,13 @@ class UserService(UserServiceInterface):
         return self.__transform_entity(user)
     
 
-    def list(self) -> list[UserDTO]:
+    def list(self) -> list[UserResponseDTO]:
         users_list = self.user_repository.list()
 
         if not users_list:
             return []
         
-        return [self.__transform_entity(user) for user in users_list]
+        return [self.__transform_entity(user).model_dump() for user in users_list]
 
 
     def change_email(self, id: int, email: str):
@@ -65,7 +65,7 @@ class UserService(UserServiceInterface):
 
         user.blocked = False
     
-    def __transform_dto(self, user: UserDTO) -> User:
+    def __transform_dto(self, user: UserCreateDTO) -> User:
         new_user = User(
             user.name,
             user.email,
@@ -75,12 +75,11 @@ class UserService(UserServiceInterface):
 
         return new_user
     
-    def __transform_entity(self, user: User) -> UserDTO:
-        user_dto = UserDTO(
-            user.id,
-            user.name,
-            user.email,
-            user.password
+    def __transform_entity(self, user: User) -> UserResponseDTO:
+        user_dto = UserResponseDTO(
+            user_id=user.id,
+            name=user.name,
+            email=user.email,
         )
 
         return user_dto

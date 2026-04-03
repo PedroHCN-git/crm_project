@@ -1,10 +1,14 @@
-from dataclasses import dataclass
-from typing import Optional
+from pydantic import BaseModel, Field
 
 
-@dataclass
-class UserDTO():
-    user_id: Optional[int]
-    name: str
-    email: str
-    password: str
+class BaseUserDTO(BaseModel):
+    name: str = Field(...)
+    email: str = Field(...)
+
+
+class UserCreateDTO(BaseUserDTO):
+    password: str = Field(...)
+
+
+class UserResponseDTO(BaseUserDTO):
+    user_id: int = Field(...)
