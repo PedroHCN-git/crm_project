@@ -1,5 +1,5 @@
 from app.repositories.user_repository_interface import UserRepositoryInterface
-from app.exceptions.repository import NotFoundError
+from app.exceptions.repository import NotFoundException
 from app.entities.user import User
 from app.infra.user_orm import UserORM
 from sqlalchemy.orm import Session
@@ -39,7 +39,7 @@ class UserRepository(UserRepositoryInterface):
 
         user = self.get_by_id(id)
         if not user:
-            raise NotFoundError("User not found")
+            raise NotFoundException("User not found")
 
         return user
     

@@ -4,3 +4,4 @@
 *.db
 .vscode
 *tests
+*log

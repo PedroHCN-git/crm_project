@@ -13,7 +13,7 @@ class User():
         name: str,
         email: str,
         password: str,
-        blocked: bool = False,
+        blocked: Optional[bool] = False,
         id: Optional[int] = None
     ):
         self.__id = id
