@@ -1,15 +1,15 @@
 from app.services.user_service_interface import UserServiceInterface
 from app.repositories.user_repository_interface import UserRepositoryInterface
 from app.dto.user import UserCreateDTO, UserResponseDTO
-from app.entities.user import User
-from app.exceptions import DomainException
 from app.utils import handle_exceptions
+from app.mappers import UserMapperProtocol
 from typing import Optional
 
 class UserService(UserServiceInterface):
     
-    def __init__(self, user_repository: UserRepositoryInterface):
+    def __init__(self, user_repository: UserRepositoryInterface, mapper: UserMapperProtocol):
         self.user_repository = user_repository
+        self.mapper = mapper
 
     @handle_exceptions()
     def save(self, user: UserCreateDTO):
@@ -26,7 +26,7 @@ class UserService(UserServiceInterface):
         if not user:
             return None
         
-        return self.__transform_entity(user)
+        return self.mapper.to_dto(user)
     
     @handle_exceptions()
     def list(self) -> list[UserResponseDTO]:
@@ -35,7 +35,7 @@ class UserService(UserServiceInterface):
         if not users_list:
             return []
         
-        return [self.__transform_entity(user).model_dump() for user in users_list]
+        return [self.mapper.to_dto(user) for user in users_list]
 
     @handle_exceptions()
     def change_email(self, id: int, email: str):
@@ -60,24 +60,4 @@ class UserService(UserServiceInterface):
         user = self.user_repository.get_user(id)
 
         user.blocked = False
-    
-    @handle_exceptions()
-    def __transform_dto(self, user: UserCreateDTO) -> User:
-        new_user = User(
-            name=user.name,
-            email=user.email,
-            password=user.password
-        )
-
-        return new_user
-    
-    @handle_exceptions()
-    def __transform_entity(self, user: User) -> UserResponseDTO:
-        user_dto = UserResponseDTO(
-            user_id=user.id,
-            name=user.name,
-            email=user.email,
-        )
-
-        return user_dto
     

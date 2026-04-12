@@ -1,5 +1,5 @@
-from .user_controller import user_bp
+from .user_controller import user_router
 
 __all__ = [
-    "user_bp"
+    "user_router"
 ]
