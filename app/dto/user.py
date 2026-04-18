@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+from typing import Optional
 
 
 class BaseUserDTO(BaseModel):
@@ -12,3 +13,11 @@ class UserCreateDTO(BaseUserDTO):
 
 class UserResponseDTO(BaseUserDTO):
     user_id: int = Field(...)
+    blocked: bool = Field(...)
+
+
+class UserDataActualizeDTO(BaseModel):
+    name: Optional[str] = Field(default=None)
+    email: Optional[str] = Field(default=None)
+    password: Optional[str] = Field(default=None)
+    blocked: Optional[bool] = Field(default=None)

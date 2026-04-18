@@ -1,18 +1,25 @@
-from abc import ABC, abstractmethod
-from app.dto.user import BaseUserDTO
+from abc import abstractmethod, ABC
 from typing import Optional
-from app.services.base_service_interface import BaseServiceInterface
+from pydantic import BaseModel
 
-class UserServiceInterface(BaseServiceInterface[BaseUserDTO]):
+
+class UserServiceInterface(ABC):
+    @abstractmethod
+    def save(self, dto: BaseModel):
+        raise NotImplementedError
+
+    @abstractmethod
+    def list() -> list[BaseModel]:
+        raise NotImplementedError
+
+    @abstractmethod
+    def get_by_id(self, id: int) -> Optional[BaseModel]:
+        raise NotImplementedError
     
     @abstractmethod
     def unblock(self, id: int):
         raise NotImplementedError
     
     @abstractmethod
-    def change_email(self, id: int, email: str):
-        raise NotImplementedError
-    
-    @abstractmethod
-    def change_password(self, id: int, password: str):
+    def actualize_data(self, user_id: str, user_data: BaseModel):
         raise NotImplementedError

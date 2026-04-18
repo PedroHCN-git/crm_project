@@ -1,9 +1,10 @@
 from app.services.user_service_interface import UserServiceInterface
 from app.repositories.user_repository_interface import UserRepositoryInterface
-from app.dto.user import UserCreateDTO, UserResponseDTO
+from app.dto.user import UserCreateDTO, UserResponseDTO, UserDataActualizeDTO
 from app.utils import handle_exceptions
 from app.mappers import UserMapperProtocol
 from typing import Optional
+
 
 class UserService(UserServiceInterface):
     
@@ -38,22 +39,13 @@ class UserService(UserServiceInterface):
         return [self.mapper.to_dto(user) for user in users_list]
 
     @handle_exceptions()
-    def change_email(self, id: int, email: str):
-        user = self.user_repository.get_by_id_or_fail(id)
+    def actualize_data(self, user_id: str, user_data: UserDataActualizeDTO):
+        user = self.user_repository.get_by_id_or_fail(int(user_id))
 
-        user.email = email
+        user = self.mapper.actualize_data(user_data, user)
         
-        self.user_repository.change_email(email)
-    
-    @handle_exceptions()
-    def change_password(self, id: int, password: str):
-        user = self.user_repository.get_user(id)
+        self.user_repository.save(user)
 
-        user.password = password
-        
-        self.user_repository.update_password(user)
-        
-        return
 
     @handle_exceptions()
     def unblock(self, id):

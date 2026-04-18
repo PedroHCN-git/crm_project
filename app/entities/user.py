@@ -44,12 +44,14 @@ class User():
 
     @email.setter
     def email(self, new_user_email: str):
+
         if self.__blocked:
             raise UserBlockedException("user is blocked, can't change his e-mail")
         
         self.__valid_email(new_user_email)
            
-        self.__email == new_user_email
+        self.__email = new_user_email
+
 
     @property
     def password(self):

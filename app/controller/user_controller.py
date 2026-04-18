@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Response, Form, Depends
-from app.services.user_service import UserService, UserRepositoryInterface
-from app.repositories.user_repository import UserRepository
-from app.dto.user import UserCreateDTO, UserResponseDTO
+from app.services.user_service import UserService, UserServiceInterface
+from app.repositories.user_repository import UserRepository, UserRepositoryInterface
+from app.dto.user import UserCreateDTO, UserResponseDTO, UserDataActualizeDTO
 from app.infra.session_manager import SessionLocal
 from app.mappers.user_mapper import UserMapperProtocol, UserMapper
 
@@ -42,7 +42,9 @@ def get_user_service(
     '/',
     response_model=list[UserResponseDTO]
 )
-async def get_users(user_service: Session = Depends(get_user_service)) -> list[UserResponseDTO]:
+async def get_users(
+    user_service: UserService = Depends(get_user_service)
+) -> list[UserResponseDTO]:
     return user_service.list()
 
 
@@ -50,7 +52,10 @@ async def get_users(user_service: Session = Depends(get_user_service)) -> list[U
     '/{user_id}',
     response_model=Optional[UserResponseDTO]
 )
-async def get_user(user_id: str, user_service: Session = Depends(get_user_service)) -> Optional[UserResponseDTO]:
+async def get_user(
+    user_id: str,
+    user_service: UserServiceInterface = Depends(get_user_service)
+) -> Optional[UserResponseDTO]:
     try:
         return user_service.get_by_id(user_id)
     except ValueError:
@@ -59,7 +64,10 @@ async def get_user(user_id: str, user_service: Session = Depends(get_user_servic
 
 
 @user_router.post('/')
-async def create_user(user_data: UserCreateDTO = Form(), user_service: Session = Depends(get_user_service)):
+async def create_user(
+    user_data: UserCreateDTO = Form(),
+    user_service: UserServiceInterface = Depends(get_user_service)
+):
     user_dto = UserCreateDTO(
         name=user_data.name,
         email=user_data.email,
@@ -71,3 +79,16 @@ async def create_user(user_data: UserCreateDTO = Form(), user_service: Session =
         return Response('User created', status_code=201)
     except Exception:
         return Response('User save failed', status_code=400)
+
+
+@user_router.patch('/{user_id}')
+async def actualize_user_data(
+    user_id: str,
+    user_data: UserDataActualizeDTO = Form(),
+    user_service: UserServiceInterface = Depends(get_user_service)
+):
+    try:
+        user_service.actualize_data(user_id, user_data)
+        return Response('Data actualized', status_code=200)
+    except Exception:
+        return Response('Actualize failed', status_code=400)
